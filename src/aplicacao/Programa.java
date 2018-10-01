@@ -51,13 +51,10 @@ public class Programa {
 			System.out.print(" Data do check-Out (DD/MM/ANO):");
 			dataCheckout = sdf.parse(sc.next());
 			
-			Date agora = new Date();
-			if(dataCheckin.before(agora) || dataCheckout.before(agora)) {
-				System.out.println("Erro na reserva, data de saída não pode ser menor que a data de chegada!");
-			} else if (!dataCheckout.after(dataCheckin)) {
-				System.out.println("Erro na reserva, data de saída não pode ser menor que a data de chegada!");
+			String error = reser.atualizarDatas(dataCheckin, dataCheckout);
+			if(error != null) {
+				System.out.println("Erro ao reservar: "+ error);
 			} else {
-				reser.atualizarDatas(dataCheckin, dataCheckout);
 				System.out.println(reser.toString());
 			}
 		}

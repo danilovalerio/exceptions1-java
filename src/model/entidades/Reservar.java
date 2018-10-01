@@ -22,9 +22,17 @@ public class Reservar {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public void atualizarDatas(Date checkin, Date checkout) {
+	public String atualizarDatas(Date checkin, Date checkout) {
+		Date agora = new Date();
+		if(checkin.before(agora) || checkout.before(agora)) {
+			return "Datas de reserva devem ser futuras!";
+		}
+		if (!checkout.after(checkin)) {
+			return "Data de saída não pode ser menor que a data de chegada!";
+		} 
 		this.checkIn = checkin;
 		this.checkOut = checkout;
+		return null;
 	}
 
 	@Override
