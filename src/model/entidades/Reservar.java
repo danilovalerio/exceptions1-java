@@ -3,6 +3,8 @@ package model.entidades;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservar {
 	
 	private Integer numeroQuarto;
@@ -11,6 +13,10 @@ public class Reservar {
 	
 	
 	public Reservar(Integer numeroQuarto, Date checkIn, Date checkOut) {
+		if (!checkOut.after(checkIn)) {
+			throw new DomainException("Data de saída não pode ser menor que a data de chegada!");
+		}
+		
 		this.numeroQuarto = numeroQuarto;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -22,17 +28,16 @@ public class Reservar {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public String atualizarDatas(Date checkin, Date checkout) {
+	public void atualizarDatas(Date checkin, Date checkout) {
 		Date agora = new Date();
 		if(checkin.before(agora) || checkout.before(agora)) {
-			return "Datas de reserva devem ser futuras!";
+			 throw new DomainException("Datas de reserva devem ser futuras!");
 		}
 		if (!checkout.after(checkin)) {
-			return "Data de saída não pode ser menor que a data de chegada!";
+			throw new DomainException("Data de saída não pode ser menor que a data de chegada!");
 		} 
 		this.checkIn = checkin;
 		this.checkOut = checkout;
-		return null;
 	}
 
 	@Override

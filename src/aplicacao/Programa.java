@@ -5,7 +5,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 
+import javax.swing.plaf.synth.SynthSeparatorUI;
+
 import model.entidades.Reservar;
+import model.exceptions.DomainException;
 
 /**
  * Fazer um programa para ler os dados de uma reserva de hotel (número do quarto, data
@@ -21,26 +24,25 @@ O programa não deve aceitar dados inválidos para a reserva, conforme as seguinte
  */
 
 public class Programa {
-	public static void main(String[] args) throws ParseException {
-		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");		
-		Date dataCheckin = new Date();
-		Date dataCheckout = new Date();
+	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");	
 		
-		System.out.println("----- PENSÃO DO NANATO - SEJA BEM VINDO ------");
-		System.out.print("Informe os dados abaixo: \n Número do quarto:");
-		Integer numQuarto = sc.nextInt();
+		try {
+			
+			Date dataCheckin = new Date();
+			Date dataCheckout = new Date();
+			
+			System.out.println("----- PENSÃO DO NANATO - SEJA BEM VINDO ------");
+			System.out.print("Informe os dados abaixo: \n Número do quarto:");
+			Integer numQuarto = sc.nextInt();
+			
+			System.out.print(" Data do checkin-In (DD/MM/ANO):");
+			dataCheckin = sdf.parse(sc.next());
+			System.out.print(" Data do check-Out (DD/MM/ANO):");
+			dataCheckout = sdf.parse(sc.next());
+			
 		
-		System.out.print(" Data do checkin-In (DD/MM/ANO):");
-		dataCheckin = sdf.parse(sc.next());
-		System.out.print(" Data do check-Out (DD/MM/ANO):");
-		dataCheckout = sdf.parse(sc.next());
-		
-		
-		if(!dataCheckout.after(dataCheckin)) {
-			System.out.println("Erro na reserva, data de saída não pode ser menor que a data de chegada!");
-		} else {
 			Reservar reser = new Reservar(numQuarto, dataCheckin, dataCheckout);
 			System.out.println(reser.toString());
 			
@@ -51,20 +53,23 @@ public class Programa {
 			System.out.print(" Data do check-Out (DD/MM/ANO):");
 			dataCheckout = sdf.parse(sc.next());
 			
-			String error = reser.atualizarDatas(dataCheckin, dataCheckout);
-			if(error != null) {
-				System.out.println("Erro ao reservar: "+ error);
-			} else {
-				System.out.println(reser.toString());
-			}
-		}
+			reser.atualizarDatas(dataCheckin, dataCheckout);
+			System.out.println(reser.toString());
 			
-		
-		
-		
-		
-		
-		
+		}
+		catch (ParseException e) {
+			System.out.println("Formato de data inválido!");
+		}
+		catch (DomainException e) {
+			System.out.println("Erro ao efetuar reserva: "+ e.getMessage());
+		}
+		catch (RuntimeException e) {
+			System.out.println("Erro não esperado, contate o administrador.");
+		}
+		/*catch (IllegalArgumentException e) { //captura a excessão ocorrida no atualizar
+			System.out.println("Erro ao efetuar reserva: "+ e.getMessage());
+		}*/
+				
 		sc.close();
 
 	}
